@@ -11,14 +11,26 @@ export async function POST(request: Request) {
     const json = await request.json();
     console.log(json);
     const user = await prisma.sluzba.create({
-      data: {
-        firstName: json.firstName,
-        lastName: json.lastName,
-        dateOfBirth: json.dateOfBirth,
-        jobTitle: json.jobTitle,
-        experience: json.experience,
-      }
+      data: json,
     });
+
+    return new NextResponse(JSON.stringify(user), { 
+     status: 201, 
+     headers: { "Content-Type": "application/json" },
+    });
+  } catch (error: any) {
+    return new NextResponse(error.message, { status: 500 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const json = await request.json();
+    const user = await prisma.sluzba.delete({
+      where: {
+        id: json.id
+      }
+    })
 
     return new NextResponse(JSON.stringify(user), { 
      status: 201, 
