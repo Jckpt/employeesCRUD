@@ -2,6 +2,9 @@ import { prisma } from "@/src/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const date = searchParams.get('date');
+  const searchString = searchParams.get('searchString')
   const users = await prisma.sluzba.findMany();
   return NextResponse.json(users);
 }
