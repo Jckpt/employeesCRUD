@@ -26,8 +26,8 @@ const EmployeeRow: React.FC<Props> = ({
       onMouseEnter={() => setShowTrash(true)}
       onMouseLeave={() => setShowTrash(false)}
     >
-      <TableCell className="font-medium">{firstName}</TableCell>
-      <TableCell>{lastName}</TableCell>
+      <TableCell className="font-medium capitalize">{firstName}</TableCell>
+      <TableCell className="capitalize">{lastName}</TableCell>
       <TableCell>{convertDate(dateOfBirth)}</TableCell>
       <TableCell>{jobTitle}</TableCell>
       <TableCell className="text-right">{experience}</TableCell>

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import SearchFilters from "@/src/components/SearchFilters";
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/card";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import EmployeeModal from "./EmployeeModal";
 const EmployeeTable = () => {
   const [page, setPage] = useState<number>(1);
   const [date, setDate] = useState<Date>();
@@ -48,21 +50,26 @@ const EmployeeTable = () => {
     error,
   } = useSWR<Employee, Error>(`/api/sluzba/${page}`, fetcher);
   return (
-    <Card className="overflow-x-auto md:w-1/2">
-      <CardHeader>
-        <CardTitle>Służba zamku</CardTitle>
-        <CardDescription>
-          Członkowie służby zamku z bajki Piękna i Bestia
-        </CardDescription>
+    <Card className="overflow-x-auto md:w-1/2 w-full">
+      <CardHeader className="flex-row justify-between">
+        <div className="flex-col">
+          <CardTitle>Służba zamku</CardTitle>
+          <CardDescription>
+            Członkowie służby zamku z bajki Piękna i Bestia
+          </CardDescription>
+        </div>
+        <EmployeeModal />
       </CardHeader>
       <CardContent className="">
-        <SearchFilters
-          date={date}
-          handleDateChange={handleDateChange}
-          search={search}
-          handleSearchChange={handleSearchChange}
-        />
-        <Table className="">
+        <div className="flex">
+          <SearchFilters
+            date={date}
+            handleDateChange={handleDateChange}
+            search={search}
+            handleSearchChange={handleSearchChange}
+          />
+        </div>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Imię</TableHead>
