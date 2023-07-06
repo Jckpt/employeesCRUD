@@ -25,6 +25,7 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Popover,
   PopoverContent,
@@ -32,7 +33,8 @@ import {
 } from "@/components/ui/popover";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-
+import useSWRMutation from "swr/mutation";
+import { sendRequest } from "../lib/utils";
 const formSchema = z.object({
   firstName: z
     .string()
@@ -66,6 +68,11 @@ const formSchema = z.object({
 });
 
 const EmployeeModal = () => {
+  const { toast } = useToast();
+  const { trigger, isMutating } = useSWRMutation(
+    "/api/sluzba",
+    sendRequest /* options */
+  );
   const toDate = new Date();
   const fromDate = new Date(
     toDate.getFullYear() - 100,
@@ -85,11 +92,32 @@ const EmployeeModal = () => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
+    try {
+      // const result = await trigger(
+      //   {
+      //     firstName: values.firstName,
+      //     lastName: values.lastName,
+      //     dateOfBirth: values.dateOfBirth,
+      //     jobTitle: values.jobTitle,
+      //     experience: values.experience,
+      //   } /* options */
+      // );
+      toast({
+        title: "Dodano pracownika",
+        description: `Dodano pracownika ${values.firstName} ${values.lastName} do listy pracowników.`,
+      });
+    } catch (e) {
+      toast({
+        title: "Coś poszło nie tak",
+        description: `Nie udało się dodać pracownika ${values.firstName} ${values.lastName} do listy pracowników.`,
+      });
+    }
     console.log(values);
   }
+  console.log(isMutating);
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -204,7 +232,9 @@ const EmployeeModal = () => {
               )}
             />
             <DialogFooter>
-              <Button type="submit">Zatwierdź</Button>
+              <Button disabled={isMutating} type="submit">
+                Zatwierdź
+              </Button>
             </DialogFooter>
           </form>
         </Form>

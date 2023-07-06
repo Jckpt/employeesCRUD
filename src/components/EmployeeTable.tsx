@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import SearchFilters from "@/src/components/SearchFilters";
 import EmployeeRow from "@/src/components/EmployeeRow";
 import fetcher from "@/src/lib/utils";
-import useSWR from "swr";
+import useSWR, { useSWRConfig } from "swr";
+import useSWRMutation from "swr/mutation";
 import { useState } from "react";
 import Employee from "@/src/lib/Employee";
 import {
@@ -48,7 +49,9 @@ const EmployeeTable = () => {
     data: employees,
     isLoading,
     error,
-  } = useSWR<Employee, Error>(`/api/sluzba/${page}`, fetcher);
+  } = useSWR<Employee, Error>(`/api/sluzba/${page}${``}`, fetcher);
+  // TODO: Dodac search param ktore bedzie sie bralo z objektu ktory ma date i search
+  console.log(employees);
   return (
     <Card className="overflow-x-auto md:w-1/2 w-full">
       <CardHeader className="flex-row justify-between">

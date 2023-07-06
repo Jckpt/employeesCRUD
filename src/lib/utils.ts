@@ -1,3 +1,4 @@
+import Employee from "./Employee";
 export default async function fetcher<JSON = any>(
   input: RequestInfo,
   init?: RequestInit
@@ -18,4 +19,20 @@ export function convertDate(dateString: string) {
 
   const formattedDate = `${formattedDay}/${formattedMonth}/${year}`;
   return formattedDate;
+}
+export async function sendRequest(url: string, { arg }: { arg: Employee }) {
+  return fetch(url, {
+    method: "POST",
+    body: JSON.stringify(arg),
+  }).then((res) => res.json());
+}
+
+export async function sendDeleteRequest(
+  url: string,
+  { arg }: { arg: { id: string } }
+) {
+  return fetch(url, {
+    method: "DELETE",
+    body: JSON.stringify(arg),
+  }).then((res) => res.json());
 }

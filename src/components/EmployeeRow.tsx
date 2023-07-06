@@ -8,9 +8,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Employee from "../lib/Employee";
-import { convertDate } from "../lib/utils";
+import { convertDate, sendDeleteRequest } from "../lib/utils";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
+import useSWRMutation from "swr/mutation";
 interface Props {
   employee: Employee;
 }
@@ -19,7 +20,10 @@ const EmployeeRow: React.FC<Props> = ({
   employee: { firstName, lastName, dateOfBirth, experience, id, jobTitle },
 }) => {
   const [showTrash, setShowTrash] = useState(false);
-
+  const { trigger, isMutating } = useSWRMutation(
+    "/api/sluzba",
+    sendDeleteRequest /* options */
+  );
   return (
     <TableRow
       key={id}
