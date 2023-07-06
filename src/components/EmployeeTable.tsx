@@ -4,8 +4,7 @@ import { Button } from "@/components/ui/button";
 import SearchFilters from "@/src/components/SearchFilters";
 import EmployeeRow from "@/src/components/EmployeeRow";
 import fetcher from "@/src/lib/utils";
-import useSWR, { useSWRConfig } from "swr";
-import useSWRMutation from "swr/mutation";
+import useSWR from "swr";
 import { useState } from "react";
 import Employee from "@/src/lib/Employee";
 import {
@@ -30,7 +29,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import EmployeeModal from "./EmployeeModal";
 const EmployeeTable = () => {
   const [page, setPage] = useState<number>(1);
-  const [date, setDate] = useState<Date>();
+  const [date, setDate] = useState<Date>(new Date());
   const [search, setSearch] = useState<string>("");
   const pageIncrease = () => {
     setPage((page) => page + 1);
@@ -49,9 +48,9 @@ const EmployeeTable = () => {
     data: employees,
     isLoading,
     error,
+    mutate,
   } = useSWR<Employee, Error>(`/api/sluzba/${page}${``}`, fetcher);
   // TODO: Dodac search param ktore bedzie sie bralo z objektu ktory ma date i search
-  console.log(employees);
   return (
     <Card className="overflow-x-auto md:w-1/2 w-full">
       <CardHeader className="flex-row justify-between">
@@ -61,7 +60,7 @@ const EmployeeTable = () => {
             Członkowie służby zamku z bajki Piękna i Bestia
           </CardDescription>
         </div>
-        <EmployeeModal />
+        <EmployeeModal mutate={mutate} />
       </CardHeader>
       <CardContent className="">
         <div className="flex">
@@ -97,7 +96,11 @@ const EmployeeTable = () => {
                     </TableRow>
                   ))
               : employees.map((employee: Employee) => (
-                  <EmployeeRow employee={employee} key={employee.id} />
+                  <EmployeeRow
+                    mutate={mutate}
+                    employee={employee}
+                    key={employee.id}
+                  />
                 ))}
           </TableBody>
         </Table>

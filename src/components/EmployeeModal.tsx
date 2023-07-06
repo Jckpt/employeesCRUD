@@ -12,7 +12,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +20,6 @@ import {
 import { format } from "date-fns";
 import { Plus, CalendarIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,7 +65,7 @@ const formSchema = z.object({
     .transform((arg) => parseInt(arg)),
 });
 
-const EmployeeModal = () => {
+const EmployeeModal = ({ mutate }) => {
   const { toast } = useToast();
   const { trigger, isMutating } = useSWRMutation(
     "/api/sluzba",
@@ -96,15 +94,16 @@ const EmployeeModal = () => {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     try {
-      // const result = await trigger(
-      //   {
-      //     firstName: values.firstName,
-      //     lastName: values.lastName,
-      //     dateOfBirth: values.dateOfBirth,
-      //     jobTitle: values.jobTitle,
-      //     experience: values.experience,
-      //   } /* options */
-      // );
+      const result = await trigger(
+        {
+          firstName: values.firstName,
+          lastName: values.lastName,
+          dateOfBirth: values.dateOfBirth,
+          jobTitle: values.jobTitle,
+          experience: values.experience,
+        } /* options */
+      );
+      mutate();
       toast({
         title: "Dodano pracownika",
         description: `Dodano pracownika ${values.firstName} ${values.lastName} do listy pracowników.`,
@@ -117,7 +116,6 @@ const EmployeeModal = () => {
     }
     console.log(values);
   }
-  console.log(isMutating);
   return (
     <Dialog>
       <DialogTrigger asChild>

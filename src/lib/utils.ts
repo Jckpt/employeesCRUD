@@ -29,7 +29,7 @@ export async function sendRequest(url: string, { arg }: { arg: Employee }) {
 
 export async function sendDeleteRequest(
   url: string,
-  { arg }: { arg: { id: string } }
+  { arg }: { arg: { id: number } }
 ) {
   return fetch(url, {
     method: "DELETE",
