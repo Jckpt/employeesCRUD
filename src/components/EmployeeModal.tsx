@@ -33,6 +33,12 @@ import * as z from "zod";
 import { useForm } from "react-hook-form";
 import useSWRMutation from "swr/mutation";
 import { sendRequest } from "../lib/utils";
+import { EmployeesResponse } from "../lib/Employee";
+import { KeyedMutator } from "swr";
+
+interface Props {
+  mutate: KeyedMutator<EmployeesResponse>;
+}
 const formSchema = z.object({
   firstName: z
     .string()
@@ -65,7 +71,7 @@ const formSchema = z.object({
     .transform((arg) => parseInt(arg)),
 });
 
-const EmployeeModal = ({ mutate }) => {
+const EmployeeModal: React.FC<Props> = ({ mutate }) => {
   const { toast } = useToast();
   const { trigger, isMutating } = useSWRMutation(
     "/api/sluzba",

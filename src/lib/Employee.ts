@@ -7,4 +7,9 @@ interface Employee {
   experience: number;
 }
 
+export interface EmployeesResponse {
+  employees: Employee[];
+  totalPages: number;
+}
+
 export default Employee;

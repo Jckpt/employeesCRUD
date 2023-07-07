@@ -31,9 +31,6 @@ const SearchFilters: React.FC<Props> = ({
           value={search}
           onChange={handleSearchChange}
         />
-        <Button type="submit" className="mr-20">
-          <Search className="h-4 w-4" />
-        </Button>
       </div>
     </>
   );

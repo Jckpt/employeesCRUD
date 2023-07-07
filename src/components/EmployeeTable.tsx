@@ -15,7 +15,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import {
   Card,
   CardContent,
@@ -24,14 +23,18 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import EmployeeModal from "./EmployeeModal";
+import { EmployeesResponse } from "@/src/lib/Employee";
+import useDebounce from "../lib/useDebounce";
+
 const EmployeeTable = () => {
   const [page, setPage] = useState<number>(1);
   const [date, setDate] = useState<Date>(new Date());
   const [search, setSearch] = useState<string>("");
+  const debouncedSearch = useDebounce(search, 1000);
   const pageIncrease = () => {
+    if (data && page >= data.totalPages) return;
     setPage((page) => page + 1);
   };
   const pageDecrease = () => {
@@ -44,12 +47,13 @@ const EmployeeTable = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-  const {
-    data: employees,
-    isLoading,
-    error,
-    mutate,
-  } = useSWR<Employee, Error>(`/api/sluzba/${page}${``}`, fetcher);
+  const { data, isLoading, error, mutate } = useSWR<EmployeesResponse, Error>(
+    () =>
+      debouncedSearch
+        ? `/api/sluzba/${page}?searchString=${search}`
+        : `/api/sluzba/${page}`,
+    fetcher
+  );
   // TODO: Dodac search param ktore bedzie sie bralo z objektu ktory ma date i search
   return (
     <Card className="overflow-x-auto md:w-1/2 w-full">
@@ -95,7 +99,7 @@ const EmployeeTable = () => {
                       <TableCell className="text-right">test</TableCell>
                     </TableRow>
                   ))
-              : employees.map((employee: Employee) => (
+              : data?.employees.map((employee: Employee) => (
                   <EmployeeRow
                     mutate={mutate}
                     employee={employee}
@@ -113,7 +117,14 @@ const EmployeeTable = () => {
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <Button variant="outline" size="icon" className="m-0.5">
+          <Button
+            variant="outline"
+            size="icon"
+            className="m-0.5"
+            onClick={() => {
+              setPage(1);
+            }}
+          >
             {page}
           </Button>
           <Button

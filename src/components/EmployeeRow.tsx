@@ -13,9 +13,12 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import useSWRMutation from "swr/mutation";
 import { useToast } from "@/components/ui/use-toast";
+import { EmployeesResponse } from "../lib/Employee";
+import { KeyedMutator } from "swr";
+
 interface Props {
   employee: Employee;
-  mutate: any;
+  mutate: KeyedMutator<EmployeesResponse>;
 }
 
 const EmployeeRow: React.FC<Props> = ({
@@ -61,9 +64,11 @@ const EmployeeRow: React.FC<Props> = ({
       <TableCell className="text-right">{experience}</TableCell>
       <TableCell>
         <Button
-          variant="destructive"
+          variant="default"
           size="icon"
-          className={`h-7 w-7 ${showTrash ? "visible" : "invisible"}`}
+          className={`h-7 w-7 hover:bg-red-600 ${
+            showTrash ? "visible" : "invisible"
+          }`}
           onClick={() => handleDelete(id)}
         >
           <Trash2 className="h-4 w-4" />
